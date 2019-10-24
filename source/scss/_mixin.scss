@@ -1,0 +1,21 @@
+
+// //圖片取代文字的技巧
+// .hideText {
+//     /* 首行縮排 */
+//     text-indent: 101%;
+//     /* 超出邊界隱藏 */
+//     overflow: hidden;
+//     /* 不要讓它換行 */
+//     white-space: nowrap;
+// }
+
+@mixin pad {
+  @media (max-width:767px) {
+    @content;
+  }
+}
+@mixin mobile {
+  @media (max-width:575px) {
+    @content;
+  }
+}

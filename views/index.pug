@@ -1,0 +1,157 @@
+
+extend partials/layout.pug
+block carousel
+	.container
+		.row.justify-content-center
+			.col.text-center
+				.titleInfo.mx-auto
+					h1.titleInfo-title.text-white 台北旅遊資訊
+					//- select.select(name="")
+					//- 	option(value="") --請選擇行政區--
+					//- 	option(value="1") 1
+					//- 	option(value="2") 2
+					//- 	option(value="3") 3
+					//- 	option(value="4") 4
+				.banner.mx-auto
+					.banner-title.text-left.mb-3 熱門行政區
+					ul.row.banner-content.justify-content-center
+						li.col-md-3.col-auto.banner-content-item
+							a.btn.btn-regionPurple.btn-custom-1(href="/regions/Songshan?page=1#region") 松山區
+						li.col-md-3.col-auto.banner-content-item
+							a.btn.btn-regionRed.btn-custom-1(href="/regions/Jhongshan?page=1#region") 中山區
+						li.col-md-3.col-auto.banner-content-item
+							a.btn.btn-regionYellow.btn-custom-1(href="/regions/Beitou?page=1#region") 北投區
+						li.col-md-3.col-auto.banner-content-item
+							a.btn.btn-regionBlue.btn-custom-1(href="/regions/Datong?page=1#region") 大同區
+						li.col-md-3.col-auto.banner-content-item
+							a.btn.btn-regionRed.btn-custom-1(href="/regions/Shihlin?page=1#region") 士林區
+						li.col-md-3.col-auto.banner-content-item
+							a.btn.btn-regionBlue.btn-custom-1(href="/regions/Nangang?page=1#region") 南港區
+						li.col-md-3.col-auto.banner-content-item
+							a.btn.btn-regionYellow.btn-custom-1(href="/regions/Neihu?page=1#region") 內湖區
+						li.col-md-3.col-auto.banner-content-item
+							a.btn.btn-regionPurple.btn-custom-1(href="/regions/Sinyi?page=1#region") 信義區
+						li.col-md-3.col-auto.banner-content-item
+							a.btn.btn-regionBlue.btn-custom-1(href="/regions/Wanhua?page=1#region") 萬華區
+						li.col-md-3.col-auto.banner-content-item
+							a.btn.btn-regionYellow.btn-custom-1(href="/regions/Da_an?page=1#region") 大安區
+						li.col-md-3.col-auto.banner-content-item
+							a.btn.btn-regionPurple.btn-custom-1(href="/regions/Jhongjheng?page=1#region") 中正區
+						li.col-md-3.col-auto.banner-content-item
+							a.btn.btn-regionRed.btn-custom-1(href="/regions/Wunshan?page=1#region") 文山區
+block content
+	.container
+		ul.row
+			if (cookiesAllData[0].productId != "")
+				h3.col-12.mb-3 瀏覽紀錄
+				each cookie in cookiesAllData
+					-var path = "/spots/"+cookie.productId
+					.col-6.col-sm-4.mb-3
+						a(href=path)
+							li.history.rounded
+								img.history-img.rounded(src=cookie.imgUrl)
+								.d-md-block.d-none #{cookie.stitle}
+		.border-regionBlue.separationLine.mb-5.mx-auto#region
+		.showData
+			h5.showData-title.text-regionPurple.text-center #{taipeiData[0].data.region}
+			.row.justify-content-center 
+				each item,key in taipeiData
+					- var url = "/spots/"+ item.id
+					if(key<10)
+						.col-10.col-md-6.col-lg-5
+								a.card.card-hover(href=url)
+									img.card-img-top(src=item.data.file[0], alt='...')
+									.card-body
+										h5.card-title #{item.data.stitle}
+										.card-region #{item.data.region}
+										.card-tag #{item.data.CAT2}
+										ul.m-0
+											if (item.data.MEMO_TIME !== undefined && item.data.MEMO_TIME !== "") 
+												li.mb-1
+													p.card-text.card-time #{item.data.MEMO_TIME}
+											if (item.data.address !== undefined && item.data.address !== "")
+												li.mb-1
+													p.card-address.card-text #{item.data.address}
+											if (item.data.MEMO_TEL !== undefined && item.data.MEMO_TEL !== "") 
+												li.mb-1
+													p.card-phone.card-text #{item.data.MEMO_TEL}
+		.row.justify-content-center
+			.col-auto
+				ul.pagination
+					li.page-item
+						a.page-link.js-prePagination(href='#') Previous
+					- for (var page=1; page<=pageCounts;page++)
+						li.page-item
+							- var pagePath = '/regions/'+ taipeiData[0].data.regionEn+'?page='+ page+'#region'
+							a.page-link(href=pagePath)=page
+					li.page-item
+						a.page-link.js-nextPagination(href='#') Next
+
+block js
+	script(type="text/javascript").
+		let prePagination,nextPagination
+		let maxPageNumber = parseInt(#{pageCounts})
+		//尋找網址列中是否有資料傳遞
+		function preAndNextButton(type){
+			//尋找網址列中是否有資料傳遞(QueryString)
+			let url = window.location.href
+			let page = 1
+			if(url.indexOf('?')!=-1)
+			{
+				//之後去分割字串把分割後的字串放進陣列中
+				var ary1 = url.split('?');
+				//此時ary1裡的內容為：
+				//ary1[0] = 'index.aspx'，ary2[1] = 'id=U001&name=GQSM'
+				
+				//下一步把後方傳遞的每組資料各自分割
+				var ary2 = ary1[1].split('&');
+				//此時ary2裡的內容為：
+				//ary2[0] = 'id=U001'，ary2[1] = 'name=GQSM'
+				
+				//最後如果我們要找id的資料就直接取ary[0]下手，name的話就是ary[1]
+				var ary3 = ary2[0].split('=');
+				//此時ary3裡的內容為：
+				//ary3[0] = 'id'，ary3[1] = 'U001'
+				
+				//取得page值
+				page = parseInt(ary3[1]);
+				//- console.log(page)
+			}
+			console.log("page",page,typeof(page))
+			let perPage;
+			if(type =="pre"){
+				if(page-1>=1){
+					perPage = page-1
+				}else{
+					perPage = 1
+				}
+			}else if(type="next"){
+				if(page+1>maxPageNumber){
+					perPage = maxPageNumber
+				}else{
+					perPage = page+1
+				}
+			}
+			else{
+				return
+			}
+			
+			window.location.hash= "#region";
+			window.location.search="?page=" +  perPage
+			
+		}
+
+		$(document).ready(function () {
+			prePagination = $(".js-prePagination");
+			nextPagination =$(".js-nextPagination");
+			//上一頁
+			prePagination.click(function(e){
+				e.preventDefault()
+				preAndNextButton("pre")
+			})
+			//下一頁
+			nextPagination.click(function(e){
+				e.preventDefault()
+				preAndNextButton("next")
+			})
+		})

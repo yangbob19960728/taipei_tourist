@@ -1,0 +1,25 @@
+// .indexCarousel{
+//     position: relative;
+// }
+// .indexCarousel__title{
+//     position: absolute;
+//     top: 50px;
+//     left: 30px;
+// }
+.courseList{
+    display: flex;
+
+}
+.courseList__item{
+    padding: 15px;
+    border: 1px solid rgba(black,0.2);
+    text-align: center;
+    margin: 5px;
+    transition: 1s;
+}
+.courseList__item--shadow{
+    box-shadow: 0 0 5px rgba(black,0.2);
+    &:hover{
+        box-shadow: 0 0 5px rgba(black,0.6);
+    }
+}

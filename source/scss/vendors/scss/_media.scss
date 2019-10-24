@@ -1,0 +1,12 @@
+.media {
+  display: flex;
+  align-items: flex-start;
+  //新增 
+  img{
+    height: 64px;
+  }
+}
+
+.media-body {
+  flex: 1;
+}

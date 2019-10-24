@@ -1,0 +1,33 @@
+// 載入所有的scss檔案
+
+//載入自訂變數,mixin
+@import 'customVariables';
+@import 'mixin';
+//css reset
+@import 'reset';
+
+//全網站基礎設定
+@import 'base';
+
+//排版
+@import 'layout';
+
+//pages
+@import 'index';
+@import 'course';
+
+
+//第三方套件
+//swiper
+@import "swiper";
+
+// font-awesome
+@import "fontAwesome/scss/fontawesome.scss";
+//bootstrap
+@import 'vendors/allBootstrap';
+
+//cropper
+@import 'cropper/cropper.scss';
+
+@import 'main';
+

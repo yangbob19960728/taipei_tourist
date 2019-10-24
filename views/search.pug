@@ -1,0 +1,111 @@
+
+extend partials/layout.pug
+block content
+	.container
+		.showData.mt-3
+			h3.showData-title.text-regionPurple.text-center 關鍵字: #{searchTitle}
+			.row.justify-content-center
+				if(taipeiData !=null)
+					each item,key in taipeiData
+						- var url = "/spots/"+ item.id
+						.col-10.col-md-6.col-lg-5
+								a.card.card-hover(href=url)
+									img.card-img-top(src=item.data.file[0], alt='...')
+									.card-body
+										h5.card-title #{item.data.stitle}
+										.card-region #{item.data.region}
+										.card-tag #{item.data.CAT2}
+										ul.m-0
+											if (item.data.MEMO_TIME !== undefined && item.data.MEMO_TIME !== "") 
+												li.mb-1
+													p.card-text.card-time #{item.data.MEMO_TIME}
+											if (item.data.address !== undefined && item.data.address !== "")
+												li.mb-1
+													p.card-address.card-text #{item.data.address}
+											if (item.data.MEMO_TEL !== undefined && item.data.MEMO_TEL !== "") 
+												li.mb-1
+													p.card-phone.card-text #{item.data.MEMO_TEL}
+				else
+					h3.showData-title.text-regionPurple.text-center(style="height:400px;") 找不到您要找的資料
+		.row.justify-content-center
+			.col-auto
+				ul.pagination
+					if(pageCounts!=null)
+						li.page-item
+							a.page-link.js-search-prePagination(href='#') Previous
+						- for (var page=1; page<=pageCounts;page++)
+							li.page-item
+								- var pagePath = '/search'+'?page='+ page+'&searchTitle='+ searchTitle
+								a.page-link(href=pagePath)=page
+						li.page-item
+							a.page-link.js-search-nextPagination(href='#') Next
+
+block js
+	script(type="text/javascript").
+		let prePagination,nextPagination
+		let maxPageNumber = parseInt(#{pageCounts})
+		let searchTitle = '#{searchTitle}'
+		//尋找網址列中是否有資料傳遞
+		function preAndNextButton(type){
+			//尋找網址列中是否有資料傳遞(QueryString)
+			let url = window.location.href
+			let page = 1
+			if(url.indexOf('?')!=-1)
+			{
+				//之後去分割字串把分割後的字串放進陣列中
+				var ary1 = url.split('?');
+				//此時ary1裡的內容為：
+				//ary1[0] = 'index.aspx'，ary2[1] = 'id=U001&name=GQSM'
+				
+				//下一步把後方傳遞的每組資料各自分割
+				var ary2 = ary1[1].split('&');
+				//此時ary2裡的內容為：
+				//ary2[0] = 'id=U001'，ary2[1] = 'name=GQSM'
+				
+				//最後如果我們要找id的資料就直接取ary[0]下手，name的話就是ary[1]
+				var ary3 = ary2[0].split('=');
+				//此時ary3裡的內容為：
+				//ary3[0] = 'id'，ary3[1] = 'U001'
+				if(ary3[0]=="page"){
+					//取得page值
+				page = parseInt(ary3[1]);
+				}
+				
+				//- console.log(page)
+			}
+			//- console.log("page",page,typeof(page))
+			let perPage;
+			if(type =="pre"){
+				if(page-1>1){
+					perPage = page-1
+				}else{
+					perPage = 1
+				}
+			}else if(type="next"){
+				if(page+1>maxPageNumber){
+					perPage = maxPageNumber
+				}else{
+					perPage = page+1
+				}
+			}
+			else{
+				return
+			}
+			
+			//- window.location.hash= "/search";
+			url="/search?page=" +  perPage + '&searchTitle='+ searchTitle
+			window.location.href = window.location.origin + url
+		}
+
+		$(document).ready(function () {
+			prePagination = $(".js-search-prePagination");
+			nextPagination =$(".js-search-nextPagination");
+			prePagination.click(function(e){
+				e.preventDefault()
+				preAndNextButton("pre")
+			})
+			nextPagination.click(function(e){
+				e.preventDefault()
+				preAndNextButton("next")
+			})
+		})

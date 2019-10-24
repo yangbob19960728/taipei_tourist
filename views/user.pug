@@ -1,0 +1,206 @@
+extend partials/layout.pug
+
+
+block content
+  .container.mt-5
+    .row.align-items-start.user-body(style="")
+      .col-md-3
+        .shadow-sm.bg-white.py-3
+          .user-avatar.user-js-avatar.mx-auto.position-relative(style="background-image: url("+userData.imgUrl+");")
+          .form-group.user-avatar-group
+            label.d-none.d-md-inline-block(for="avatar--input")
+              i.fas.fa-camera.fa-lg.user-avatar-group-label
+            input#avatar--input.form-control-file(type="file",hidden,accept="image/*")
+            h2.avatar__name.text-center #{userData.family_name}#{userData.given_name} 
+            //- avatar-modal
+          #avatar--modal.modal.fade(tabindex='-1', role='dialog', aria-labelledby='modalLabel', aria-hidden='true')
+            .modal-dialog(role='document',style="max-width:600px")
+              .modal-content
+                .modal-header
+                  h5#modalLabel.modal-title Cropper
+                  button.close(type='button', data-dismiss='modal', aria-label='Close')
+                    span(aria-hidden='true') ×
+                .modal-body
+                  .img-container
+                    img#modalImage(src='', alt='Picture')
+                .modal-footer
+                  button#crop.btn.btn-primary.getImage(type='button', data-dismiss='modal') 儲存
+                  button.btn.btn-gray(type='button', data-dismiss='modal') 取消
+      .col-md-9
+        .shadow-sm.bg-white.p-3
+          form.avatar-form
+            .form-row
+              .form-group.col-6
+                label 名
+                input#inputAddress2.form-control(type='text', value=userData.given_name,name="given_name")
+              .form-group.col-6
+                label 姓
+                input#inputAddress2.form-control(type='text', value=userData.family_name,name="family_name")
+              .form-group.col-4
+                label 性別
+                select.form-control(name="sex")
+                  option(value="") -請選擇
+                  if (userData.sex=="boy")
+                    option(value="boy" selected) 男
+                  else
+                    option(value="boy") 男
+                  if (userData.sex=="girl")
+                    option(value="girl",selected) 女
+                  else
+                    option(value="girl") 女
+                //- input#inputPassword4.form-control(type='password', placeholder='Password')
+              .form-group.input-icon.col-sm-8
+                label 出生日期
+                .input-group
+                  input.has-datepicker.form-control(type='date', placeholder='YYYY-MM-DD',value=userData.birthday,name="birthday")
+                  .input-group-append
+                    .input-group-text(style="width:50px;")
+                      i.far.fa-calendar-alt.fa-lg.icon-form(style="right:15px;left:unset;top:9px;")
+              .form-group.col
+                label Email
+                input#inputEmail4.form-control(type='email', value=userData.email,name="email")
+                input(type="text",name="_csrf",hidden,value=csrfToken)
+              .form-group.col-auto.d-flex.justify-content-end.align-items-end
+                button#storeAvatar.btn.btn-primary(type='submit') 儲存
+          
+block js
+  script(src="/js/cropper.js")
+  script(type="text/javascript").
+    $(document).ready(function(){
+      let avatarInput = document.getElementById('avatar--input');
+      let modalImage = document.getElementById('modalImage');
+      let $crop = $("#crop")
+      let $avatarInput = $("#avatar--input")
+      let $modalImage = $("#modalImage");
+      let cropper;
+      let $storeAvatar = $("#storeAvatar")
+      let done = function (url) {
+        avatarInput.value = '';
+        modalImage.src = url;
+        //- $alert.hide();
+        $('#avatar--modal').modal('show');
+      };
+      function getRoundedCanvas(sourceCanvas) {
+        let canvas = document.createElement('canvas');
+        let context = canvas.getContext('2d');
+        let width = sourceCanvas.width;
+        let height = sourceCanvas.height;
+        canvas.width = width;
+        canvas.height = height;
+        context.imageSmoothingEnabled = true;
+        context.drawImage(sourceCanvas, 0, 0, width, height);
+        context.globalCompositeOperation = 'destination-in';
+        context.beginPath();
+        context.arc(width / 2, height / 2, Math.min(width, height) / 2, 0, 2 * Math.PI, true);
+        context.fill();
+        return canvas;
+      }
+      $avatarInput.change(function(e){
+        let files = avatarInput.files
+         if (files && files.length > 0) {
+          file = files[0];
+          console.log("file",file)
+          console.log("URL.createObjectURL(file)", URL.createObjectURL(file))
+          let imageType = file.type.split("/")[0]
+          if(imageType != "image"){
+            alert("您必須要選擇圖片")
+            return
+          }
+          done(URL.createObjectURL(file));
+        }
+        $("#avatar--modal").modal()
+      })
+      $('#avatar--modal').on('shown.bs.modal', function (e) {
+        //- let imageName = $('#avatar--input')[0].files;
+
+        //- let image = $("#modalImage");
+        //- image.attr("src",imageName)
+        //- console.log(image)
+       cropper = new Cropper(modalImage, {
+          viewMode: 1,
+          aspectRatio: 1, //設定視窗長寬比
+          dragMode: 'move',
+          // modal:false,
+          // center:false,   //中央游標 +
+          // highlight:false,
+          // movable:false,
+          zoomable: true,
+          rotatable: false, //圖片旋轉
+          scale: true,
+
+          toggleDragModeOnDblclick: false, // toggle drag mode between "crop" and "move" when clicking twice on the cropper.
+          modal: true, //黑色背景是否呈現
+          minContainerHeight: 250,
+           minContainerWidth:500,
+          // minCanvasWidth:
+          minCropBoxWidth: 120,
+          minCropBoxHeight: 120,
+          cropBoxMovable:false, //裁剪框是否可以移動
+
+          cropBoxResizable: false //藉由拖曳來調整裁剪框大小
+        });
+      }).on('hidden.bs.modal', function () {
+        cropBoxData = cropper.getCropBoxData();
+        canvasData = cropper.getCanvasData();
+        cropper.destroy();
+        cropper = null;
+      });
+      $crop.click(function(){
+        if (cropper) {
+          canvas = cropper.getCroppedCanvas({
+          })
+        }
+        let roundedCanvas = getRoundedCanvas(canvas);
+        roundedCanvas.toBlob(function (blob) {
+          let formData = new FormData();
+          formData.append('avatar', blob, 'avatar123123' + '.png');
+          console.log("formData", formData)
+          $.ajax({
+            url:'/users/avatar',
+            method: 'POST',
+            data: formData,
+            processData: false,
+            contentType: false,
+            
+            success: function (response) {
+              
+              console.log(response)
+              if(response.ret == "fail"){
+                alert("請重新上傳照片")
+              }else if(response.ret == "success"){
+                console.log(response.data)
+                $(".dropdown__img").css("background-image","url("+response.data+")")
+                $(".user-js-avatar").css("background-image","url("+response.data+")")
+              }
+            },
+            error: function (err) {
+              alert(err)
+            },
+            });
+          });
+      })
+      $storeAvatar.click(function(e){
+        e.preventDefault();
+      let given_name = $(".avatar-form input[name='given_name']").val()
+      let family_name = $(".avatar-form input[name='family_name']").val()
+      let sex = $(".avatar-form select[name='sex']").val()
+      let birthday = $(".avatar-form input[name='birthday']").val()
+      let email = $(".avatar-form input[name='email']").val()
+      let data = {
+        given_name,
+        family_name,
+        sex,
+        birthday,
+        email
+      }
+      //- console.log(data)
+      $.ajax({
+        url:'/users/profile',
+        method: 'POST',
+        data: data,
+        success:function(response){
+          console.log(response)
+        }
+      })
+      })
+    })

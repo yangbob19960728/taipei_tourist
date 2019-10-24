@@ -1,0 +1,87 @@
+nav.navbar.navbar-expand-sm.navbar-light.bg-light
+	.container
+		a.navbar-brand(href='/') 台北旅遊資訊
+		button.navbar-toggler(type='button', data-toggle='collapse', data-target='#navbarSupportedContent', aria-controls='navbarSupportedContent', aria-expanded='false', aria-label='Toggle navigation')
+			span.navbar-toggler-icon
+		#navbarSupportedContent.collapse.navbar-collapse
+			form.form-inline.my-2.my-sm-0.mr-auto(action="/search",method='get')
+				input.form-control.mr-md-2(name='searchTitle', placeholder='景點名稱', aria-label='Search')
+				button.btn.btn-outline-gray.my-2.my-sm-0(type='submit') 搜尋
+			if(userData!=null)
+				.dropdown.d-sm-block.d-none
+					a.nav-link.p-0(href="#",role="button",data-toggle="dropdown",aria-haspopup="true" aria-expanded="false")
+						.l-avatar-img.rounded-circle(style="background-image: url("+userData.imgUrl+ ")")
+					.dropdown-menu(aria-labelledby='navbarDropdown',style="left:-80px")
+						a.dropdown-item(href='/users') #{userData.given_name}
+						//- .dropdown-divider
+						//- a.dropdown-item(href='#') 訊息管理
+						//- a.dropdown-item(href='#') 我的收藏
+						.dropdown-divider
+						a.js-login-out.dropdown-item(href='') 登出
+				.d-sm-none.d-flex.align-items-center
+					.l-avatar-img.rounded-circle.d-inline-block.mr-3(style="background-image: url("+userData.imgUrl+ ")")
+					a.btn.btn-outline-primary.mr-auto(href="/users") 會員頁面
+					a.js-login-out.btn.btn-outline-danger(href="") 登出
+			else
+				a.nav-link.d-sm-block.d-none(href="#exampleModal",data-toggle="modal") 登入/註冊
+				a.nav-link.d-block.d-sm-none(href="#exampleModal",data-toggle="modal") 登入/註冊
+			#exampleModal.modal.fade(tabindex='-1', role='dialog', aria-labelledby='exampleModalLabel', aria-hidden='true')
+				.modal-dialog(role='document')
+					.modal-content
+						.modal-header.border-bottom-0
+							button.close(type='button', data-dismiss='modal', aria-label='Close')
+								span(aria-hidden='true') ×
+						.modal-body.text-center
+							h5.modal-title.font-weight-bold(style="transform:translate(0,-20px)") 使用社交平台帳戶登入
+							.login-group-list.text-center.mb-4
+								button#member-login-provider-facebook.btn.login-facebook.login-group-list-item
+									i.fab.fa-facebook-f.fa-2x
+								button#member-login-provider-github.btn.login-github.login-group-list-item
+									i.fab.fa-github.fa-2x
+								button#member-login-provider-google.btn.login-google.login-group-list-item
+									img(src="/images/icons_google.png")
+							.border-bottom.border-regionBlue.mb-5.text-center(style="height:13px")
+								span.px-3.bg-white 或
+							#loginBlock
+								h5.font-weight-bold 會員帳號登入
+								form(action="/auth/signIn",method="post")
+									.emailDiv.form-group.input-icon
+										input.form-control(type="email", name="loginEmail",placeholder="Email")
+										|
+										.input-icon-form.far.fa-envelope
+										.js-loginEmail-valid-feedback.valid-feedback.js-valid-feedback.text-left OK!
+										.js-loginEmail-invalid-feedback.invalid-feedback.js-invalid-feedback.text-left 格式錯誤
+									.passwordDiv.form-group.input-icon.text-left
+										input.form-control(type="password", name="loginpassword",placeholder="Password")
+										|
+										.input-icon-form.fas.fa-lock
+										.js-loginpassword-valid-feedback.valid-feedback.js-valid-feedback.text-left OK!
+										.js-loginpassword-invalid-feedback.invalid-feedback.js-invalid-feedback.text-left 密碼長度不能少於6個字元
+										a#registered.a-hover-textDecoration(href="") 免費註冊
+										a.a-hover-textDecoration.float-right(href="") 忘記密碼?
+									input.btn.btn-primary.form-control(type="submit", value="登入")
+							#registeredBlock.d-none
+								h5.font-weight-bold 免費註冊
+								form.needs-validation(novalidate)
+									.usernameDiv.form-group.input-icon
+										input.form-control.aaaa(type="text", name="username",placeholder="名稱",required)
+										|
+										.input-icon-form.fas.fa-user
+										.js-username-valid-feedback.valid-feedback.js-valid-feedback.text-left OK!
+										.js-username-invalid-feedback.invalid-feedback.js-invalid-feedback.text-left 不可以空白唷
+									.emailDiv.form-group.input-icon
+										input.form-control(type="email", name="email",placeholder="Email")
+										|
+										.input-icon-form.far.fa-envelope
+										.js-email-valid-feedback.valid-feedback.js-valid-feedback.text-left OK!
+										.js-email-invalid-feedback.invalid-feedback.js-invalid-feedback.text-left 格式錯誤
+									.passwordDiv.form-group.input-icon.text-left
+										input.form-control(type="password", name="password",placeholder="Password")
+										|
+										.input-icon-form.fas.fa-lock
+										.js-password-valid-feedback.valid-feedback.js-valid-feedback.text-left OK!
+										.js-password-invalid-feedback.invalid-feedback.js-invalid-feedback.text-left 密碼長度不能少於6個字元
+										a#login.a-hover-textDecoration(href="") 會員登入
+										a.a-hover-textDecoration.float-right(href="") 忘記密碼?
+									input.btn.btn-primary.form-control(type="submit", value="註冊")
+						.modal-footer.border-top-0

@@ -1,0 +1,374 @@
+.btn:focus,
+.btn:active:focus,
+.btn.active:focus,
+.btn.focus,
+.btn:active.focus,
+.btn.active.focus {
+  box-shadow: none;
+  outline: none;
+}
+
+.titleInfo {
+  max-width: 1024px;
+  height: 400px;
+  background-image: url('../images/taipei.jpg');
+  background-size: cover;
+  background-position: center 60%;
+  padding-top: 90px;
+}
+
+.titleInfo-title {
+  margin-bottom: 96px;
+}
+
+.select {
+  width: 452px;
+  height: 48px;
+  appearance: none;
+  background-image: url('../images/icons_down.png');
+  background-position: 98% center;
+  background-color: rgba(#FFFFFF, 0.7);
+  background-repeat: no-repeat;
+  cursor: pointer;
+  border: 3px solid #FFFFFF inset;
+  font-size: 18px;
+  padding: 5px 10px;
+  line-height: 21px;
+}
+
+.banner {
+  max-width: 800px;
+  padding: 20px 20px 5px 20px;
+  margin-bottom: 50px;
+  font-size: 18px;
+  box-shadow: 0 1px 3px rgba(#000000, 0.2);
+  position: relative;
+  top: -30px;
+  background-color: #fff;
+  border-radius: 5px;
+
+  .banner-content {
+    padding: 0 50px;
+    flex-wrap: wrap;
+
+    .banner-content-item {
+      margin-bottom: 15px;
+    }
+  }
+}
+
+.separationLine {
+  max-width: 900px;
+  border-style: dashed;
+  border-bottom: 1px dashed black;
+  position: relative;
+
+  &:before {
+    content: "";
+    position: absolute;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    display: block;
+    width: 24px;
+    height: 24px;
+    background-image: url("../images/icons_down_white.jpg"), linear-gradient($regionBlue, $regionBlue);
+    background-blend-mode: lighten;
+    border: 1px solid $regionBlue;
+    border-radius: 50%;
+    background-position: 57% 42%;
+    background-repeat: no-repeat;
+    margin-bottom: 76px;
+  }
+}
+
+.showData {
+  .showData-title {
+    margin-bottom: 24px;
+  }
+}
+
+.footer {
+  padding: 24px 0;
+
+  .footer-title {
+    margin-bottom: 15px;
+  }
+
+  .footer-content {
+    font-size: 12px;
+  }
+}
+
+//swiper----------------
+.swiper-container {
+  width: 100%;
+  height: 400px;
+  margin-left: auto;
+  margin-right: auto;
+
+  @include pad {
+    height: 300px;
+  }
+}
+
+.swiper-slide {
+  background-size: 50% auto;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-color: darken(#F8F9FA, 20%);
+
+  @include pad {
+    background-size: 100% auto;
+  }
+}
+
+.swiper-button-next,
+.swiper-button-prev {
+  transition: 0.5s;
+  outline: none;
+}
+
+.swiper-button-next {
+  right: 30px;
+
+  &:hover {
+    transform: scale(1.2) translate(5px, 0);
+  }
+}
+
+.swiper-button-prev {
+  left: 30px;
+
+  &:hover {
+    transform: scale(1.2) translate(-5px, 0);
+  }
+}
+
+// .gallery-top {
+//   // height: 80%;
+//   // width: 100%;
+// }
+.gallery-thumbs {
+  height: 80px;
+  padding: 10px 0;
+}
+
+.gallery-thumbs .swiper-slide {
+  width: 20%;
+  height: 100%;
+  opacity: 0.4;
+  cursor: pointer;
+}
+
+.gallery-thumbs .swiper-slide-thumb-active {
+  opacity: 1;
+}
+
+//swiper  spotGroup
+.spotGroup {
+  padding: 50px 100px;
+  background-color: #f4f4f4;
+
+  @include pad {
+    padding: 20px 50px;
+  }
+
+  @include mobile {
+    padding: 0;
+  }
+
+  .swiper-container {
+    height: auto;
+
+    .swiper-slide {
+      background-color: transparent;
+    }
+
+    .card {
+      height: 420px;
+    }
+  }
+
+}
+
+.spotGroup-button-next {
+  right: -30px;
+}
+
+.spotGroup-button-prev {
+  left: -30px;
+}
+
+//--------------------
+//spots.html
+.spot {
+  // .spot__title {}
+
+  .spot-tag {
+    // position: absolute;
+    // bottom: 20px;
+    // right: 25px;
+    font-size: 16px;
+    font-weight: 600;
+
+    &:before {
+      content: "";
+      display: inline-block;
+      width: 20px;
+      height: 20px;
+      background-image: url("../images/icons_tag.png");
+      margin-right: 8px;
+    }
+  }
+}
+
+#map {
+  height: 500px;
+}
+
+//登入mark的列表項目
+.login-group-list-item {
+  width: 60px;
+  height: 60px;
+  border-radius: 100%;
+  text-align: center;
+  margin: 3px;
+  padding: 10px;
+  color: #fff;
+  transition: .3s;
+  position: relative;
+
+  &:hover {
+    color: white;
+
+  }
+
+  &.login-facebook {
+    background-color: #3b5998;
+
+    &:hover {
+      background-color: darken(#3b5998, 5%);
+    }
+  }
+
+  &.login-github {
+    background-color: rgba(black, 0.8);
+
+    &:hover {
+      background-color: black;
+    }
+
+    img {
+      width: auto;
+      height: auto;
+
+    }
+  }
+
+  &.login-google {
+    background-color: white;
+    border: 1px solid rgba(black, 0.1);
+    opacity: 0.8;
+
+    img {
+      width: 28px;
+      height: 28px;
+      transform: translate(0, -2px);
+    }
+
+    &:hover {
+      opacity: 1;
+    }
+  }
+}
+
+.input-icon {
+  position: relative;
+
+  .form-control {
+    padding-left: 35px;
+  }
+
+  .input-icon-form {
+    position: absolute;
+    left: 10px;
+    top: 13px;
+    color: #aaa;
+  }
+}
+
+.history {
+  display: flex;
+  padding: 10px;
+  box-shadow: 0 0 5px rgba(black, 0.1);
+  transition: 0.5s;
+
+  .history-img {
+    flex: 0 0 110px;
+    height: 86px;
+    margin-right: 30px;
+    overflow: hidden;
+
+    @include pad {
+      margin-right: auto;
+      margin-left: auto;
+      // margin-right: 0;
+    }
+
+
+  }
+
+  &:hover {
+    box-shadow: 0 0 5px rgba(black, 0.2);
+    filter: brightness(110%);
+  }
+}
+
+.l-avatar-img {
+  width: 42px;
+  height: 42px;
+  background-size: cover;
+  background-position: center center;
+  background-repeat: no-repeat;
+  // @include mobile{
+
+  // }
+}
+
+
+//user
+.user-body {
+  height: calc(100vh - 75px - 175px);
+  min-height: 320px;
+
+  @include pad {
+    height: auto;
+  }
+}
+
+.user-avatar {
+  width: 120px;
+  height: 120px;
+  border-radius: 50%;
+  background-position: center center;
+  background-size: cover;
+  overflow: hidden;
+}
+
+.user-avatar-group-label {
+  position: absolute;
+  bottom: 98px;
+  left: 50%;
+  transform: translate(26px);
+
+  &:hover {
+    cursor: pointer;
+  }
+}
+
+
+//cropper
+.cropper-view-box,
+.cropper-face {
+  border-radius: 50%;
+}

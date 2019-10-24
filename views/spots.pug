@@ -1,0 +1,281 @@
+
+extend partials/layout.pug
+block carousel
+  .container.d-none.d-md-block
+    .swiper-container.gallery-top
+      .swiper-wrapper
+        each slide in taipeiData.file
+          - var imgUrl = 'background-image:url(' + slide + ')'
+          .swiper-slide(style=imgUrl)
+      .swiper-button-next.swiper-button-white.d-none.d-md-block
+      .swiper-button-prev.swiper-button-white.d-none.d-md-block
+    .swiper-container.gallery-thumbs.mb-5.d-none.d-md-block
+      .swiper-wrapper
+        each slide in taipeiData.file
+          - var imgUrl = 'background-image:url(' + slide + ')'
+          .swiper-slide(style=imgUrl)
+  .container.d-md-none
+    .swiper-container.swiper-container-pad
+      .swiper-wrapper
+        each slide in taipeiData.file
+          - var imgUrl = 'background-image:url(' + slide + ')'
+          .swiper-slide(style=imgUrl)
+      //- .swiper-button-next.swiper-button-white.d-none.d-md-block
+      //- .swiper-button-prev.swiper-button-white.d-none.d-md-block
+
+block content
+  .container
+    .row.spot.mb-5
+      .col-md-8.mt-3.order-2.order-md-1
+        h1 #{taipeiData.stitle}
+          a.spot-tag(href="#").text-regionBlue.ml-3.d-none.d-md-inline-block #{taipeiData.CAT2}
+          //- small 瀏覽人次
+        hr
+        p #{taipeiData.xbody}
+        hr
+        #map.mb-5
+          - var hiddenText = taipeiData.longitude +"&"+ taipeiData.latitude+ "&"+ taipeiData.stitle + "&" +taipeiData.typeEn
+          input(type="hidden", name="hiddenText",value=hiddenText)
+        h3.border-bottom.pb-2.mb-3 評論 
+        .media.mb-3
+          img.mr-3(src='/images/view.jpg', alt='...')
+          .media-body
+            h5.mt-0 版主
+            p 只要註冊登入就可以留言唷~~
+        hr
+        if(commits!=null)
+          each commit in commits
+            .media.mb-3
+              img.mr-3(src=commit.userImgUrl, alt='...')
+              .media-body
+                h5.mt-0 #{commit.userName} 
+                  if(userData!=null)
+                    if(userData.uid == commit.author)
+                      a.btn.btn-danger.float-right.js-delete-commit(href="#",data-commitid=commit.commitId,data-author=commit.author,data-productid=productId) 刪除
+                p #{commit.content}
+            hr
+        .media.mb-3
+          if(userData!=null)
+            img.mr-3(src=userData.imgUrl, alt='...')
+            .media-body 
+              h5.mt-0 #{userData.given_name}
+              form.form-inline(action="/commits/"+productId,method="post")
+                textarea.form-control.flex-grow-1.mr-3(name="comment",height="62",data-productId=productId)
+                button.btn.btn-primary.flex-auto(type="submit") 留言
+          else
+            img.mr-3(src="/images/view.jpg", alt='...')
+            .media-body 
+              h5.mt-0 登入才能留言唷~~ 
+              form.form-inline(disabled)
+                textarea.form-control.flex-grow-1.mr-3(name="comment",height="62",data-productId=productId)
+                button.btn.btn-primary.flex-auto(disabled) 留言
+      .col-md-4.order-1.order-md-2
+        .card.sticky-top(style="top:20px")
+          .card-body
+            ul.m-0
+              if (taipeiData.MEMO_TIME !== undefined && taipeiData.MEMO_TIME !== "") 
+                li.mb-1
+                  p.card-text.card-time #{taipeiData.MEMO_TIME}
+              if (taipeiData.address !== undefined && taipeiData.address !== "")
+                li.mb-1
+                  p.card-address.card-text #{taipeiData.address}
+              if (taipeiData.MEMO_TEL !== undefined && taipeiData.MEMO_TEL !== "") 
+                li.mb-1
+                  p.card-phone.card-text #{taipeiData.MEMO_TEL}
+              if (taipeiData.xurl !== undefined && taipeiData.xurl !== "") 
+                li.mb-1
+                  a.card-web.card-text(href=taipeiData.xurl,target="_blank")
+                    i.fas.fa-globe.text-dark.mr-2
+                    |   #{taipeiData.xurl}
+              if (taipeiData.MRT !== undefined && taipeiData.MRT !== "") 
+                li
+                  p.card-text.card-mrt #{taipeiData.MRT}站
+              if (taipeiData.info !== undefined && taipeiData.info !== "")
+                li
+                  p.card-text.m-0 交通資訊
+                  p #{taipeiData.info}
+  .container-fluid.spotGroup
+    .row
+      .col
+        h2.text-center.mb-3 更多推薦景點
+    .row
+      .col
+        .swiper-container.js-spotGroup-swiper
+          .swiper-wrapper
+            each item,key in swiperData
+              - var url = "/spots/"+ item.id
+              .swiper-slide
+                a.card.mb-0(href=url)
+                  img.card-img-top(src=item.data.file[0], alt='...')
+                  .card-body
+                    h5.card-title #{item.data.stitle}
+                    .card-region #{item.data.region}
+                    .card-tag-bottom #{item.data.CAT2}
+                    ul.m-0
+                      if (item.data.MEMO_TIME !== undefined  && item.data.MEMO_TIME !== "")
+                        li.mb-1
+                          p.card-text.card-time #{item.data.MEMO_TIME}
+                      if (item.data.address !== undefined  && item.data.address !== "")
+                        li.mb-1
+                          p.card-address.card-text #{item.data.address}
+                      if (item.data.MEMO_TEL !== undefined  && item.data.MEMO_TEL !== "") 
+                        li.mb-1
+                          p.card-phone.card-text #{item.data.MEMO_TEL}
+        .swiper-button-next.spotGroup-button-next.d-none.d-md-block
+        .swiper-button-prev.spotGroup-button-prev.d-none.d-md-block
+block js
+  
+  script(type='text/javascript').
+    var map;
+    var marker;
+    //google Map 標記的圖片
+    const type = {
+      'spa': 'icons_marker_blue',   
+      'highway': 'icons_marker_white',   
+      'buildings': 'icons_marker_gray', 
+      'artGallery': 'icons_marker_green',
+      'bike': 'icons_marker_blue',
+      'outdoorActivities': 'icons_marker_lightGreen',
+      'faith': 'icons_marker_lightRed',
+      'other': 'icons_marker_black',
+      'travel': 'icons_marker_yellow',
+      'publicArt': 'icons_marker_red',
+      'spring': 'icons_marker_purple'
+    }
+    Object.freeze(type)
+    function initMap() {
+      map = new google.maps.Map(document.getElementById('map'), {
+        center: {
+          lat:Number(#{taipeiData.latitude}),
+          lng:Number(#{taipeiData.longitude})
+        },
+        zoom: 18
+      });
+      marker = new google.maps.Marker({
+        position: {
+          lat:Number(#{taipeiData.latitude}),
+          lng:Number(#{taipeiData.longitude})
+        },
+        map: map,
+        title: "#{taipeiData.stitle}",
+        animation:google.maps.Animation.BOUNCE,
+        icon:"../images/"+ type['#{taipeiData.typeEn}'] + ".png",
+      })
+    }
+    var galleryThumbs;
+    var galleryTop;
+    var swiperPad;
+    var appendNumber = 4;
+    var prependNumber = 1;
+    var spotGroup__swiper;
+    function initSwiper(){
+      galleryThumbs= new Swiper('.gallery-thumbs', {
+        spaceBetween: 10,
+        slidesPerView: 4,
+        loop: true,
+        
+        freeMode: true,
+        loopedSlides: 5, //looped slides should be the same
+        watchSlidesVisibility: true,
+        watchSlidesProgress: true,
+      });
+      galleryTop= new Swiper('.gallery-top', {
+        spaceBetween: 10,
+        loop: true,
+        loopedSlides: 5, //looped slides should be the same
+        speed: 500,
+        effect: "fade",
+        simulateTouch: false,
+        navigation: {
+          nextEl: '.swiper-button-next',
+          prevEl: '.swiper-button-prev',
+        },
+        thumbs: {
+          swiper: galleryThumbs,
+        },
+      });
+    }
+    function initSwiperGroup(){
+      spotGroup__swiper= new Swiper('.js-spotGroup-swiper', {
+        slidesPerView: 1,
+        //- centeredSlides: true,
+        spaceBetween: 30,
+        //- loop: true,
+        //設定停止滑鼠的拖曳
+        //- simulateTouch: false,
+        effect:"slide",
+        pagination: {
+          el: '.spotGroup__pagination',
+          clickable: true,
+        },
+        navigation: {
+          nextEl: '.spotGroup-button-next',
+          prevEl: '.spotGroup-button-prev',
+        },
+        breakpoints: {
+          600: {
+            slidesPerView: 2,
+            spaceBetween: 30,
+          },
+          1050: {
+            slidesPerView: 3,
+            spaceBetween: 40,
+          },
+          1550: {
+            slidesPerView: 4,
+            spaceBetween: 40,
+          }
+        }
+      });
+    }
+    function initSwiperPas(){
+      swiperPad = new Swiper('.swiper-container-pad',{
+        spaceBetween: 10,
+        loop: true,
+        loopedSlides: 5, //looped slides should be the same
+        speed: 500,
+        effect: "slide",
+      })
+    }
+    function doInitSwiper(){
+      initSwiperPas()
+      initSwiper()
+      initSwiperGroup()
+    }
+    $(document).ready(function () {
+      doInitSwiper()
+      $(".js-delete-commit").click(function(e){
+        e.preventDefault()
+        let commitId = $(this).data('commitid')
+        let productid = $(this).data('productid')
+        let author = $(this).data('author')
+        //- console.log(commitId,author)
+        if(author == ""){
+          return
+        }
+        let data = {
+          //評論id
+          commitId,
+          //景點id
+          productid
+        }
+        //刪除評論
+        $.ajax({
+          url:'/users/deleteCommit',
+          method:'post',
+          data:data,
+          success:function(res){
+            if(res.success){
+              window.location.href = window.location.origin + window.location.pathname
+            }
+          },
+          error:function(err){
+            console.log(err)
+
+          }
+        })
+      })
+    })
+  script(src="https://maps.googleapis.com/maps/api/js?key=...&callback=initMap",async,defer)
+    
+  
